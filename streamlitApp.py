@@ -1,5 +1,6 @@
 import requests
 import streamlit as st
+import streamlit_extras
 from streamlit_extras.stylable_container import stylable_container
 
 st.subheader('Bitcoin converter')
