@@ -93,7 +93,7 @@ with col1:
         amount = st.text_input('enter amount:', value="1")
 
 
-# Result container with pink background
+# Result container with red background
 with col2:
     with stylable_container(
         key="result_container",
@@ -101,7 +101,8 @@ with col2:
             border: 1px solid rgba(49, 51, 63, 0.2);
             border-radius: 0.5rem;
             padding: calc(1em - 1px);
-            background-color: #ffe6e6;
+            background-color: #ff0000;
+            color: #ffffff
         }"""
     ):
         st.caption("result:")
