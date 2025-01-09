@@ -6,14 +6,25 @@ from streamlit_extras.stylable_container import stylable_container
 st.subheader('Bitcoin converter')
 
 # Helper functions
-def fetch_btc_zar_price():
-    """Fetch the BTC/ZAR price from the API."""
-    url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=zar"
+def fetch_btc_usd_price():
+    """Fetch the BTC/USD price from the CoinMarketCap API."""
+    url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest'
+    headers = {
+        'Accepts': 'application/json',
+        'X-CMC_PRO_API_KEY': '9abf79a7-d103-40ab-a43e-740639ce7cab',
+    }
+    parameters = {
+        'symbol': 'BTC',
+        'convert': 'USD'
+    }
+
     try:
-        response = requests.get(url)
-        response.raise_for_status()
+        response = requests.get(url, headers=headers, params=parameters)
+        response.raise_for_status()  # Raise exception for HTTP errors
         data = response.json()
-        price_btc_to_zar = data.get("bitcoin", {}).get("zar", 0)
+        price_btc_to_usd = data['data']['BTC']['quote']['USD']['price']
+        zar_to_usd_rate = 18.0  # Replace with a dynamic conversion rate if needed
+        price_btc_to_zar = price_btc_to_usd * zar_to_usd_rate
         return price_btc_to_zar
     except requests.RequestException as e:
         st.error(f"Error fetching BTC to ZAR price: {e}")
@@ -26,7 +37,7 @@ def perform_conversion(amount, convert_from, convert_to):
     except ValueError:
         return "Invalid amount. Please enter a numeric value."
 
-    price_btc_to_zar = fetch_btc_zar_price()
+    price_btc_to_zar = fetch_btc_usd_price()
     sats_per_btc = 100_000_000  # 1 BTC = 100,000,000 Satoshi
     price_sat_to_zar = price_btc_to_zar / sats_per_btc
 
@@ -92,7 +103,6 @@ with col1:
     ):
         amount = st.text_input('enter amount:', value="1")
 
-
 # Result container with red background
 with col2:
     with stylable_container(
@@ -114,5 +124,4 @@ with col2:
 
 with col3:
     st.write("")
-
 
